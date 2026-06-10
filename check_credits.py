@@ -6,13 +6,18 @@ SLACK = os.environ["SLACK_WEBHOOK"]
 def get_credits(cookie):
     try:
         r = requests.get(
-            "https://app.klingai.com/api/account/user/info",
-            headers={"Cookie": cookie, "User-Agent": "Mozilla/5.0"},
+            "https://kling.ai/api/account/pointAndTicket",
+            params={"caver": "2", "scope": "PERSONAL"},
+            headers={
+                "Cookie": cookie,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "Referer": "https://kling.ai/",
+            },
             timeout=15
         )
         d = r.json()
         print(json.dumps(d, ensure_ascii=False)[:300])
-        for path in [["data","credits"],["data","coinBalance"],["data","balance"]]:
+        for path in [["data","coinBalance"],["data","credits"],["data","point"],["data","balance"]]:
             v = d
             for k in path:
                 v = v.get(k) if isinstance(v, dict) else None
@@ -46,9 +51,4 @@ for a in accounts:
             warns.append(f"• {a['name']}: {c} кред. (поріг: {a['warn']})")
         lines.append(f"• *{a['name']}*: {emoji} {c:,} кредитів")
 
-msg = "\n".join(lines)
-if warns:
-    msg += "\n\n⚠️ *Увага:*\n" + "\n".join(warns)
-
-print(msg)
-requests.post(SLACK, json={"text": msg}, timeout=10)
+msg =
