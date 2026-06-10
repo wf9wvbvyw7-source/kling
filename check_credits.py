@@ -12,17 +12,28 @@ def get_credits(cookie):
                 "Cookie": cookie,
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 "Referer": "https://kling.ai/",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Origin": "https://kling.ai",
+                "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
             },
             timeout=15
         )
+        print(f"Status: {r.status_code}")
+        print(f"Response: {r.text[:500]}")
         d = r.json()
-        print(json.dumps(d, ensure_ascii=False)[:300])
         points = d.get("data", {}).get("points", [])
         if points:
             return sum(p.get("balance", 0) for p in points)
         return None
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
         return None
 
 accounts, i = [], 1
