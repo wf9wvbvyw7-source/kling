@@ -17,12 +17,9 @@ def get_credits(cookie):
         )
         d = r.json()
         print(json.dumps(d, ensure_ascii=False)[:300])
-        for path in [["data","coinBalance"],["data","credits"],["data","point"],["data","balance"]]:
-            v = d
-            for k in path:
-                v = v.get(k) if isinstance(v, dict) else None
-            if v is not None:
-                return int(v)
+        points = d.get("data", {}).get("points", [])
+        if points:
+            return sum(p.get("balance", 0) for p in points)
         return None
     except Exception as e:
         print(e)
@@ -51,4 +48,9 @@ for a in accounts:
             warns.append(f"• {a['name']}: {c} кред. (поріг: {a['warn']})")
         lines.append(f"• *{a['name']}*: {emoji} {c:,} кредитів")
 
-msg =
+msg = "\n".join(lines)
+if warns:
+    msg += "\n\n⚠️ *Увага:*\n" + "\n".join(warns)
+
+print(msg)
+requests.post(SLACK, json={"text": msg}, timeout=10)
