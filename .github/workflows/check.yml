@@ -1,0 +1,26 @@
+name: Kling
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install requests
+      - env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          ACCOUNT_1_NAME: ${{ secrets.ACCOUNT_1_NAME }}
+          ACCOUNT_1_COOKIE: ${{ secrets.ACCOUNT_1_COOKIE }}
+          ACCOUNT_1_WARN: ${{ secrets.ACCOUNT_1_WARN }}
+          ACCOUNT_2_NAME: ${{ secrets.ACCOUNT_2_NAME }}
+          ACCOUNT_2_COOKIE: ${{ secrets.ACCOUNT_2_COOKIE }}
+          ACCOUNT_2_WARN: ${{ secrets.ACCOUNT_2_WARN }}
+          ACCOUNT_3_NAME: ${{ secrets.ACCOUNT_3_NAME }}
+          ACCOUNT_3_COOKIE: ${{ secrets.ACCOUNT_3_COOKIE }}
+          ACCOUNT_3_WARN: ${{ secrets.ACCOUNT_3_WARN }}
+          ACCOUNT_4_NAME: ${{ secrets.ACCOUNT_4_NAME }}
+          ACCOUNT_4_COOKIE: ${{ secrets.ACCOUNT_4_COOKIE }}
+          ACCOUNT_4_WARN: ${{ secrets.ACCOUNT_4_WARN }}
+        run: python check_credits.py
